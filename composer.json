@@ -1,0 +1,29 @@
+{
+	"name": "kotygor/jd_tools_main",
+	"descripiton": "Мої інструменти. Головне меню і допоміжні засоби",
+	"type": "opencart-extension",
+	"extra": {
+		"src-dir" : "upload",
+		"mappings" : [
+
+		],
+		"installers" : {
+			"php" : "install.php",
+			"xml" : "install.xml"
+		}
+	},
+	"require": {
+		"kotygor/opencart-extension-installer": "*",
+		"kotygor/opencart": "*"
+	},
+	"repositories": [
+		{
+			"type": "git",
+			"url": "https://github.com/kotygor/opencart-extension-installer"
+		},
+		{
+			"type": "git",
+			"url": "https://github.com/kotygor/opencart"
+		}
+	]
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+	<name>JD Tools</name>
+	<code>default</code>
+	<version>1.0</version>
+	<author>JD</author>
+	<description><![CDATA[
+	Модифікатор для меню.
+	Версія для Opencart 2.x
+]]></description>
+	<link>zelenuj@gmail.com</link>
+	<file path="admin/controller/common/column_left.php">
+		<operation>
+			<search>
+				<![CDATA[// Stats]]>
+			</search>
+			<add position="before">
+				<![CDATA[           //JD Tools
+			$jd_tools = array();
+
+			$items = $this->config->get('jd_tools_main_menu_items');
+			foreach($items as $item) {
+				if ($this->user->hasPermission('access', $item['route'])) {
+					$children = [];
+					if (!empty($item['children'])) {
+						foreach($children as $child) {
+							if ($this->user->hasPermission('access', $child['route'])) {
+								$children[] = [
+									'name' => $child['name'],
+									'href' => $this->url->link($child['route'], 'user_token=' . $this->session->data['user_token'], true),
+									'children' => array()
+								];
+							}
+						}
+					}
+					$jd_tools[] = [
+						'name' => $item['name'],
+						'href' => $this->url->link($item['route'], 'user_token=' . $this->session->data['user_token'], true),
+						'children' => $children,
+					]
+				}
+			}
+			$data['menus'][] = array(
+				'id'        => 'jd-tools',
+				'icon'      => 'fa-cog',
+				'name'      => 'JD Tools',
+				'href'      => '',
+				'children'  => $jd_tools,
+			);
+]]>
+			</add>
+		</operation>
+	</file>
+</modification>
