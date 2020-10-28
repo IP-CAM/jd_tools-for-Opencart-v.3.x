@@ -11,7 +11,12 @@ if (empty($jd_settings)) {
 					'route'  => 'common/dashboard',
 					'name'  =>  'Немає елементів',
 					'children'  =>  [],
-				]
+				],
+				[
+					'route' =>  'tool/prom_ua_import',
+					'name'  =>  'Імпорт ПромУА',
+					'children'  => [],
+				],
 			]
 		]
 	);
