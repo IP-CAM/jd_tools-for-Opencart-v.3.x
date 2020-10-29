@@ -37,7 +37,7 @@
 						'name' => $item['name'],
 						'href' => $this->url->link($item['route'], 'user_token=' . $this->session->data['user_token'], true),
 						'children' => $children,
-					]
+					];
 				}
 			}
 			$data['menus'][] = array(
