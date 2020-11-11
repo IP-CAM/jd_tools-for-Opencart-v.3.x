@@ -1,0 +1,22 @@
+#nav {
+    padding: 0;
+}
+
+#nav ul {
+    list-style: none;
+    padding-inline-start: 0px;
+}
+#nav li {
+    margin-bottom: 5px;
+}
+#nav .btn {
+    width: 100%;
+}
+
+.question {
+    font-weight: bolder;
+}
+.answer {
+    margin-left: 30px;
+    text-decoration: underline;
+}
