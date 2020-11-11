@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Library\JD_Tools;
+namespace JD_Tools;
 
 
 class ViewBuilder
