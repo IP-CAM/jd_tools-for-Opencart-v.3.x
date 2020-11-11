@@ -10,16 +10,17 @@ class ViewBuilder
 
 	private $tab = array();
 	private $tabs = array();
+	private $registry;
 
 	public function __construct($registry, &$data = []) {
-		$this->document = $registry->get('document');
-		$this->language = $registry->get('language');
-		$this->response = $registry->get('response');
-		$this->load = $registry->get('load');
-		$this->url = $registry->get('url');
+		$this->registry = $registry;
 
 		$this->data = $data;
 		$this->getEnvironment();
+	}
+
+	public function __get($key) {
+		return $this->registry->get($key);
 	}
 
 	private function getEnvironment(){
