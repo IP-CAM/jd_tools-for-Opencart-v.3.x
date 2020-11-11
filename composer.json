@@ -5,14 +5,18 @@
 	"extra": {
 		"src-dir" : "upload",
 		"mappings" : [
+			"admin/language/uk-ua/tool/jd_tools.php",
+
 			"admin/view/template/tool/jd_tools_main.twig",
 			"admin/view/template/tool/jd_tools/snippets/button.twig",
 			"admin/view/template/tool/jd_tools/snippets/input_field.twig",
 			"admin/view/template/tool/jd_tools/snippets/progressbar.twig",
 			"admin/view/template/tool/jd_tools/snippets/setting_form.twig",
 			"admin/view/template/tool/jd_tools/snippets/tab.twig",
-			"system/library/jd_tools/viewbuilder.php",
-			"admin/view/stylesheet/jd_tools/main.css"
+
+			"admin/view/stylesheet/jd_tools/main.css",
+
+			"system/library/jd_tools/viewbuilder.php"
 		],
 		"installers" : {
 			"php" : "install.php",

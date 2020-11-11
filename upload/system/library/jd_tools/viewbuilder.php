@@ -12,9 +12,14 @@ class ViewBuilder
 	private $tabs = array();
 	private $registry;
 
+	public $tab_content = '';
+
 	public function __construct($registry, &$data = []) {
 		$this->registry = $registry;
 		$this->data = $data;
+
+		$this->language->load('tool/jd_tools');
+
 		if (!empty($data['route'])) {
 			$this->load->language($data['route']);
 		}
@@ -52,6 +57,8 @@ class ViewBuilder
 		} else {
 			$this->data['active_tab'] = 'common';
 		}
+
+		$this->tab_content = sprintf($this->language->get('method_not_exists'), $this->data['active_tab']);
 
 		define('MESSAGE_ON', true);
 //		$this->load->language('tool/prom_ua_import');
@@ -118,7 +125,7 @@ class ViewBuilder
 		if (is_null($active_tab)) $url .= '&active_tab=' . $this->tab['id'];
 		elseif ('' !== $active_tab) $url = '&active_tab=' . $active_tab . $url;
 
-		$route = ($method)? $this->path . $method : substr($this->path, 0, -1);
+		$route = ($method)? $this->data['route'] . '/' . $method : $this->data['route'];
 
 		$link = $this->url->link( $route, 'user_token=' . $this->session->data['user_token'] . $url, true);
 		return $link;
