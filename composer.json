@@ -5,7 +5,7 @@
 	"extra": {
 		"src-dir" : "upload",
 		"mappings" : [
-			"system/library/jd_tools/view_builder.php",
+			"system/library/jd_tools/viewbuilder.php",
 			"admin/view/stylesheet/jd_tools/main.css"
 		],
 		"installers" : {
