@@ -6,9 +6,10 @@ namespace JD_Tools;
 
 class ViewBuilder
 {
-	private $data = [];
+	public $data = [];
 
 	private $tab = array();
+	protected $active_tab;
 	private $tabs = array();
 	private $registry;
 
@@ -57,8 +58,9 @@ class ViewBuilder
 		} else {
 			$this->data['active_tab'] = 'common';
 		}
+		$this->active_tab = $this->data['active_tab'];
 
-		$this->tab_content = sprintf($this->language->get('method_not_exists'), $this->data['active_tab']);
+		$this->tab_content = sprintf($this->language->get('method_not_exists'), $this->active_tab);
 
 		define('MESSAGE_ON', true);
 //		$this->load->language('tool/prom_ua_import');
@@ -81,20 +83,22 @@ class ViewBuilder
 		$this->tab = array(
 			'id'    =>  $id,
 			'name'  =>  $name,
-			'actions' => array(),
-			'col_content'   =>  '',
-			'col_1'     =>  '',
-			'col_2'     =>  '',
+			'actions' => empty($this->tab['actions'])? [] : $this->tab['actions'],
+			'col_content'   =>  empty($this->tab['col_content'])? '' : $this->tab['col_content'],
+			'col_1'     =>  empty($this->tab['col_1'])? '' : $this->tab['col_1'],
+			'col_2'     =>  empty($this->tab['col_2'])? '' : $this->tab['col_2'],
 		);
 
-		$content_method = 'Tab' . $id;
+		$content_method = 'Tab_' . $id;
 		if ($this->data['active_tab'] == $id ) {
 			$this->tab['col_content'] = $this->tab_content;
 		} else {
 			$this->tab['col_content'] = '<a href="' . $this->createLink('', $id ) . '">Завантажити контент вкладки</a>';
 		}
-
-		$this->tabs[] = $this->tab;
+		$this->saveTab($id);
+	}
+	public function saveTab($id) {
+		$this->tabs[$id] = $this->tab;
 	}
 	public function getTabs() {
 		foreach ($this->tabs as &$tab) {
@@ -110,7 +114,7 @@ class ViewBuilder
 				$url .= "&" . $key . "=" . $value;
 			}
 		} else $url = '';
-		if (is_null($active_tab)) $url .= '&active_tab=' . $this->tab['id'];
+		if (is_null($active_tab)) $url .= '&active_tab=' . $this->data['active_tab'];
 		elseif ('' !== $active_tab) $url = '&active_tab=' . $active_tab . $url;
 
 		$route = ($method)? $this->data['route'] . '/' . $method : $this->data['route'];
@@ -118,9 +122,110 @@ class ViewBuilder
 		$link = $this->url->link( $route, 'user_token=' . $this->session->data['user_token'] . $url, true);
 		return $link;
 	}
+	/**
+	 * Додавання лінку із кнопкою на активний таб
+	 *
+	 * Викликається всередині функції таба Tab_XXX(),
+	 * додає кнопку із лінком в нього.
+	 * $method - назва функції класу імпорт, параметри не передаються
+	 *
+	 * @param $name
+	 * @param $method
+	 * @param string $btn_type
+	 * @param bool $disabled
+	 */
+	public function addAction($name, $method = '', $params = array(), $btn_type = 'primary', $disabled = false) {
+
+		if (!$disabled) {
+			$action_url = $this->createLink($method, $this->data['active_tab'], $params);
+		}
+		$data = array(
+			'type' => $disabled? 'default' : (is_null($btn_type)? 'primary' : $btn_type) ,
+			'btn_text' => $name,
+			'action_url' => isset($action_url)? $action_url : '',
+			'disabled' => $disabled,
+		);
+		$this->tab['actions'][] = $this->load->view('tool/jd_tools/snippets/button', $data);
+	}
+	public function addActionSeparator() {
+		$this->tab['actions'][] = "<hr>";
+	}
+	public function getAction() {
+		if (isset($this->request->get['action'])) {
+			$action = $this->request->get['action'];
+			switch ($action) {
+
+			}
+		}
+	}
+
+	/**
+	 * Додає повідомлення на активний таб
+	 *
+	 * Викликається всередині функції таба TsbXXX(),
+	 * По-замовчуванню додає повідомлення із текстом і тегом "р" в першу колонку таба ($->tab['col_1'])
+	 * якщо $message - масив, то він буде перетворений через print_r($message, 1) і тег замінений на <pre></pre>.
+	 *
+	 * Колонка задається цифрою, 1 або 2
+	 *
+	 * @param $message
+	 * @param $class        - html tag attribute class
+	 * @param string $tag   - html tag
+	 * @param int $col_num
+	 */
+	public function addMessage($message, $class = null, $tag = 'p', $col_num = 1, $message_on = false) {
+
+		if((defined('MESSAGE_ON') && MESSAGE_ON) || $message_on) {
+			if (is_array($message) || is_object($message)) {
+				$message = print_r($message, 1);
+				if (null === $tag || 'p' == $tag) $tag = 'pre';
+			}
+			if (null === $tag) $tag = 'p';
+//			if (null === $col_num) $col_num = 1;
+			if ($class) $class = " class='" . $class . "'";
+
+
+			$this->tab['col_' . $col_num] = empty($this->tab['col_' . $col_num])?
+				"<" . $tag . $class . ">" . $message . "</$tag>"
+				: $this->tab['col_' . $col_num] . "<" . $tag . $class . ">" . $message . "</$tag>";
+		}
+	}
+	public function addSMessage($message, $type = 'other_msg') {
+		if (!is_string($message)) {
+			ob_start();
+			var_dump($message);
+			$message = ob_get_clean();
+		}
+		if (isset($this->session->data[$type]))
+			$this->session->data[$type] = '<p>' . $message . '</p>' . $this->session->data[$type];
+		else $this->session->data[$type] = '<p>' . $message . '</p>';
+	}
+	public function getSMessages(){
+		if (isset($this->session->data['error'])) {
+			$this->data['error_warning'] = $this->session->data['error'];
+
+			unset($this->session->data['error']);
+		} else {
+			$this->data['error_warning'] = '';
+		}
+		if (isset($this->session->data['success'])) {
+			$this->data['success'] = $this->session->data['success'];
+
+			unset($this->session->data['success']);
+		} else {
+			$this->data['success'] = '';
+		}
+		if (isset($this->session->data['other_msg'])) {
+			$this->data['other_msg'] = $this->session->data['other_msg'];
+			unset($this->session->data['other_msg']);
+		} else {
+			$this->data['other_msg'] = '';
+		}
+	}
 
 	public function render() {
 		$this->data['tabs'] = $this->getTabs();
+		$this->getSMessages();
 
 		$this->data['header'] = $this->load->controller('common/header');
 		$this->data['column_left'] = $this->load->controller('common/column_left');
