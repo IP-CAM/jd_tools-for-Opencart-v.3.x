@@ -14,8 +14,10 @@ class ViewBuilder
 
 	public function __construct($registry, &$data = []) {
 		$this->registry = $registry;
-
 		$this->data = $data;
+		if (!empty($data['route'])) {
+			$this->load->language($data['route']);
+		}
 		$this->getEnvironment();
 	}
 
