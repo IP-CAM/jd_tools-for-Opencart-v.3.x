@@ -94,7 +94,7 @@ class ViewBuilder
 				$this->tab['col_content'] = '<p>Функція контенту для таба ' . $id . ' не існує</p>';
 			}
 		} else {
-			$this->tab['col_content'] = '<a href="' . $this->createLink('', $id ) . '">Завантажити контент вкладки</a>';
+			$this->tab['col_content'] = '<a href="' . $this->createLink($content_method, $id ) . '">Завантажити контент вкладки</a>';
 		}
 
 		$this->tabs[] = $this->tab;
@@ -116,7 +116,7 @@ class ViewBuilder
 		if (is_null($active_tab)) $url .= '&active_tab=' . $this->tab['id'];
 		elseif ('' !== $active_tab) $url = '&active_tab=' . $active_tab . $url;
 
-		$route = ($method)? $this->path . $method : substr($this->path, 0, -1);
+		$route = (!empty($this->data['route']))? $this->data['route'] . '/' . $method : '';
 
 		$link = $this->url->link( $route, 'user_token=' . $this->session->data['user_token'] . $url, true);
 		return $link;
