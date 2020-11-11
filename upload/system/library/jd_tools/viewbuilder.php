@@ -89,19 +89,7 @@ class ViewBuilder
 
 		$content_method = 'Tab' . $id;
 		if ($this->active_tab == $id ) {
-			if (method_exists($this, $content_method)) {
-				/*
-				 * Виклик функції таба
-				 *
-				 * очевидним був би виклик через $this->>$content_method
-				 * але він запускає виклик через parent::__get() і виходить хуйня.
-				 *
-				 * Метод через call_user_func_array працює нормально.
-				*/
-				call_user_func_array(array($this, $content_method), array());
-			} else {
-				$this->tab['col_content'] = '<p>Функція контенту для таба ' . $id . ' не існує</p>';
-			}
+			$this->tab['col_content'] = $this->tab_content;
 		} else {
 			$this->tab['col_content'] = '<a href="' . $this->createLink('', $id ) . '">Завантажити контент вкладки</a>';
 		}
