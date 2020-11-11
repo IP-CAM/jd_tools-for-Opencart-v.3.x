@@ -106,6 +106,22 @@ class ViewBuilder
 		return $this->tabs;
 	}
 
+	public function createLink($method = '', $active_tab = null, $params = array()) {
+		if ($params !== array() && $params !== null) {
+			$url = '';
+			foreach ($params as $key => $value) {
+				$url .= "&" . $key . "=" . $value;
+			}
+		} else $url = '';
+		if (is_null($active_tab)) $url .= '&active_tab=' . $this->tab['id'];
+		elseif ('' !== $active_tab) $url = '&active_tab=' . $active_tab . $url;
+
+		$route = ($method)? $this->path . $method : substr($this->path, 0, -1);
+
+		$link = $this->url->link( $route, 'user_token=' . $this->session->data['user_token'] . $url, true);
+		return $link;
+	}
+
 	public function render() {
 		$this->data['tabs'] = $this->getTabs();
 
