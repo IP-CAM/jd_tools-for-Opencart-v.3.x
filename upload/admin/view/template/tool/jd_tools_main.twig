@@ -1,0 +1,56 @@
+{{ header }}
+{{ column_left }}
+<div id="content">
+	<div class="page-header">
+		<div class="container-fluid">
+			<h1>{{ heading_title }}</h1>
+			<ul class="breadcrumb">
+				{% for breadcrumb in breadcrumbs%}
+					<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="container-fluid">
+		{% if error_warning is not empty %}
+		<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i>
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			{{ error_warning }}
+		</div>
+		{% endif %}
+		{% if success is not empty %}
+		<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i>
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			{{ success }}
+		</div>
+		{% endif %}
+		{% if other_msg is not empty %}
+		<div class="alert alert-warning alert-dismissible"><i class="fa fa-check-circle"></i>
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			{{ other_msg }}
+		</div>
+		{% endif %}
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><i class="fa file-im"></i> {{ heading_title }}</h3>
+			</div>
+			<div class="panel-body">
+				<ul class="nav nav-tabs">
+					{% for i, tab in tabs %}
+					<li{% if active_tab and tab.id == active_tab %} class="active" {% endif %}>
+						<a href="#tab-{{ tab.id }}" data-toggle="tab">{{ tab.name }}</a>
+					</li>
+					{% endfor %}
+				</ul>
+				<div class="tab-content">
+					{% for i, tab in tabs %}
+					<div class="tab-pane{% if active_tab and tab.id == active_tab %} active{% endif %}" id="tab-{{ tab.id }}">
+						{{ tab.content }}
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{ footer }}

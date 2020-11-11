@@ -14,9 +14,12 @@ class ViewBuilder
 	public function __construct($registry, &$data = []) {
 		$this->document = $registry->get('document');
 		$this->language = $registry->get('language');
+		$this->response = $registry->get('response');
+		$this->load = $registry->get('load');
 		$this->url = $registry->get('url');
 
 		$this->data = $data;
+		$this->getEnvironment();
 	}
 
 	private function getEnvironment(){
@@ -37,7 +40,6 @@ class ViewBuilder
 
 		$this->data['heading_title'] = $this->language->get('heading_title');
 	}
-
 	private function loadScriptsEnvironment() {
 		if (isset($this->request->get['active_tab'])) {
 			$this->data['active_tab'] = $this->request->get['active_tab'];
@@ -65,5 +67,51 @@ class ViewBuilder
 
 	}
 
+	public function addTab($id, $name) {
+		$this->tab = array(
+			'id'    =>  $id,
+			'name'  =>  $name,
+			'actions' => array(),
+			'col_content'   =>  '',
+			'col_1'     =>  '',
+			'col_2'     =>  '',
+		);
 
+		$content_method = 'Tab' . $id;
+		if ($this->active_tab == $id ) {
+			if (method_exists($this, $content_method)) {
+				/*
+				 * Виклик функції таба
+				 *
+				 * очевидним був би виклик через $this->>$content_method
+				 * але він запускає виклик через parent::__get() і виходить хуйня.
+				 *
+				 * Метод через call_user_func_array працює нормально.
+				*/
+				call_user_func_array(array($this, $content_method), array());
+			} else {
+				$this->tab['col_content'] = '<p>Функція контенту для таба ' . $id . ' не існує</p>';
+			}
+		} else {
+			$this->tab['col_content'] = '<a href="' . $this->createLink('', $id ) . '">Завантажити контент вкладки</a>';
+		}
+
+		$this->tabs[] = $this->tab;
+	}
+	public function getTabs() {
+		foreach ($this->tabs as &$tab) {
+			$tab['content'] = $this->load->view('tool/jd_tools/snippets/tab', $tab);
+		}
+		return $this->tabs;
+	}
+
+	public function render() {
+		$this->data['tabs'] = $this->getTabs();
+
+		$this->data['header'] = $this->load->controller('common/header');
+		$this->data['column_left'] = $this->load->controller('common/column_left');
+		$this->data['footer'] = $this->load->controller('common/footer');
+
+		return $this->response->setOutput($this->load->view('tool/jd_tools_main', $this->data));
+	}
 }

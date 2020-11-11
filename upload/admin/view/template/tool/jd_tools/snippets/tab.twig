@@ -1,0 +1,24 @@
+<div id="nav" class="col-lg-2">
+	{% if actions is not empty %}
+	<ul>
+		{% for action in actions %}
+		<li>{{ action }}</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+</div>
+{% if col_content %}
+<div class="col-lg-10">
+	{{ col_content }}
+</div>
+{% endif %}
+{% if col_1 %}) { ?>
+<div class="col-lg-5">
+	{{ col_1 }}
+</div>
+{% endif %}
+{% if col_2 %}
+<div class="col-lg-5">
+	{{ col_2 }}
+</div>
+{% endif %}

@@ -5,6 +5,8 @@
 	"extra": {
 		"src-dir" : "upload",
 		"mappings" : [
+			"admin/view/template/tool/jd_tools_main.twig",
+			"admin/view/template/tool/jd_tools/snippets/tab.twig",
 			"system/library/jd_tools/viewbuilder.php",
 			"admin/view/stylesheet/jd_tools/main.css"
 		],
