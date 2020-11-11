@@ -1,0 +1,12 @@
+<div class="form-group">
+    <label for="{{ id }}">{{ label.text }}</label>
+    <input
+            type="{{ type }}" class="form-control"
+            name="{{ id }}"
+            id="{{ id }}"
+            {% if placeholder %} placeholder="{{ placeholder }}"{% endif %}
+            {% if help %} aria-describedby="{{ help.id }}"{% endif %}
+            {% if value %} value="{{ value }}"{% endif %}
+           >
+    {% if help %}<small id="{{ help.id }}" class="form-text text-muted">{{ help.text }}</small>{% endif %}
+</div>

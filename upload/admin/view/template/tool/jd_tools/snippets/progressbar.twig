@@ -1,0 +1,45 @@
+{% if title is not empty %}
+	<h2>{{ title }}</h2>
+{% endif %}
+<div class="progress" id="{{ id }}">
+	<div class="progress-bar{% if class %} {{ class }}{% endif %}" role="progressbar" aria-valuenow="{{ start_value }}" aria-valuemin="{{ min_value }}" aria-valuemax="{{ total }}">
+		<span>0 %</span>
+	</div>
+</div>
+<script>
+	$(window).on('load', function(){
+		var length = {{ total }};
+		var	chunkSize = {{ chunk_size }};
+		makeRequest({{ start }}, chunkSize, '{{ table_name }}');
+	});
+	function updateProgressBar(id, value) {
+		var total = {{ total }};
+		var width = (100 * value / total);
+		$('#' + id + ' .progress-bar')
+			.attr('style', 'width:' + width + '%')
+			.find('span').html(width.toFixed(2) + ' %');
+
+	}
+	function makeRequest(rowIndex, chunkSize, tableName) {
+		console.log('rowIndex = ', rowIndex);
+		if( {{ total }} < rowIndex ) {
+			updateProgressBar('{{ id }}', {{ total }});
+			console.log('Finish');
+			{% if redirect %}
+				window.location.href = "{{ redirect }}";
+			{% endif %}
+			return;
+		}
+		$.ajax({
+			url: '{{ processor_url }}',
+			type: "POST",
+			data: {tablename: tableName, start: rowIndex, chunkSize: chunkSize},
+			success: function(data) {
+				var Data = JSON.parse(data);
+//					console.log(Data);
+				updateProgressBar('{{ id }}', Data.i);
+				makeRequest(Data.i, chunkSize, tableName);
+			},
+		})
+	}
+</script>

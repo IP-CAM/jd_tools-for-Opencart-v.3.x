@@ -1,0 +1,5 @@
+<a{% if not disabled %} href="{{ action_url }}"{% else %} aria-disabled="true"{% endif %} data-toggle="tooltip" title="" type="button" class="btn btn-{{ type }}">
+    {% if disabled %}<i class="fa fa-check" aria-hidden="true"></i>&nbsp;{% endif %}
+    {{ btn_text }}
+    {% if disabled > 1 %} ({{ disabled }}){% endif %}
+</a>

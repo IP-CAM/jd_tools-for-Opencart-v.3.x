@@ -1,0 +1,15 @@
+<form{% if action %} action="{{ action }}" method="POST" enctype='multipart/form-data'{% endif %}
+    {% if name %} name="{{ name }}"{% endif %}
+>
+    {% if name %}
+    <input type="hidden" name="code" value="{{ name }}">
+    {% endif %}
+    {% for input in inputs %}
+    {{ input }}
+    {% endfor %}
+    <button
+            type="submit"
+            class="btn btn-primary"
+            {% if name %} name="{{ name }}"{% endif %}
+    >Зберегти</button>
+</form>
