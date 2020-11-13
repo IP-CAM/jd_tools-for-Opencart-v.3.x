@@ -69,7 +69,7 @@ class ViewBuilder
 //		$this->load->model('setting/setting');
 //		$filename = $this->model_setting_setting->getSettingValue('prom_ua_import_filename');
 //		if($filename) $this->source_config['files']['filename'] = $filename;
-//		$this->source = new Library\JD_Tools\Source($this->source_config);
+//		$this->source = new JD_Tools\Source($this->source_config);
 //
 //		library('jd_tools/target');
 //		$this->target = new Library\JD_Tools\Target($this->target_config, $this->registry);

@@ -16,7 +16,8 @@
 
 			"admin/view/stylesheet/jd_tools/main.css",
 
-			"system/library/jd_tools/viewbuilder.php"
+			"system/library/jd_tools/viewbuilder.php",
+			"system/library/jd_tools/source.php"
 		],
 		"installers" : {
 			"php" : "install.php",
