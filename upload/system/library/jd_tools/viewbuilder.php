@@ -90,9 +90,7 @@ class ViewBuilder
 		);
 
 		$content_method = 'tab_' . $id;
-		if ($this->data['active_tab'] == $id ) {
-			$this->tab['col_content'] = $this->tab_content;
-		} else {
+		if ($this->data['active_tab'] != $id ) {
 			$this->tab['col_content'] = '<a href="' . $this->createLink('', $id ) . '">Завантажити контент вкладки</a>';
 		}
 
