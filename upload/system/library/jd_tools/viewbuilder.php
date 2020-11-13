@@ -60,7 +60,7 @@ class ViewBuilder
 		}
 		$this->active_tab = $this->data['active_tab'];
 
-		$this->tab_content = sprintf($this->language->get('method_not_exists'), $this->active_tab);
+//		$this->tab_content = sprintf($this->language->get('method_not_exists'), $this->active_tab);
 
 		define('MESSAGE_ON', true);
 //		$this->load->language('tool/prom_ua_import');
@@ -89,15 +89,13 @@ class ViewBuilder
 			'col_2'     =>  empty($this->tab['col_2'])? '' : $this->tab['col_2'],
 		);
 
-		$content_method = 'Tab_' . $id;
+		$content_method = 'tab_' . $id;
 		if ($this->data['active_tab'] == $id ) {
 			$this->tab['col_content'] = $this->tab_content;
 		} else {
 			$this->tab['col_content'] = '<a href="' . $this->createLink('', $id ) . '">Завантажити контент вкладки</a>';
 		}
-		$this->saveTab($id);
-	}
-	public function saveTab($id) {
+
 		$this->tabs[$id] = $this->tab;
 	}
 	public function getTabs() {
@@ -159,6 +157,48 @@ class ViewBuilder
 		}
 	}
 
+	/*
+	 * Створення форми налаштувань
+	 */
+	//=============================================
+	public function createSettingForm($data) {
+		// todo jd params
+		$params = [
+			'inputs'    => [
+				0   =>  'view1',
+				1   =>  'view2',
+				// ...
+			],
+		];
+//		print_r($data);
+		$data['name'] = empty($data['name'])? false : $data['name'];
+
+		//todo jd view
+//		$this->addAction('Зберегти', '', ['action' => 'saveSettings']);
+		$view = $this->load->view('tool/jd_tools/snippets/setting_form', $data);
+		$this->addMessage($view, 'input', 'div', 'content');
+	}
+	public function createInputField($data) {
+		// params
+		$params = [
+			'label' =>  [
+				'id'    =>  '',
+				'text'  =>  '',
+			],
+			'type'  =>  '',
+			'placeholder'   =>  '',
+			'value' =>  '',
+		];
+		if(!empty($data['help']) && empty($data['help']['id'])) $data['help']['id'] = $data['id'] . '_help';
+		$this->load->model('setting/setting');
+		$value = $this->model_setting_setting->getSettingValue($this->module_setting_code . '_' . $data['id']);
+		$data['value'] = empty($value)? false : $value;
+
+		// view
+		$view = $this->load->view('tool/jd_tools/snippets/input_field', $data);
+		return $view;
+	}
+
 	/**
 	 * Додає повідомлення на активний таб
 	 *
@@ -181,7 +221,6 @@ class ViewBuilder
 				if (null === $tag || 'p' == $tag) $tag = 'pre';
 			}
 			if (null === $tag) $tag = 'p';
-//			if (null === $col_num) $col_num = 1;
 			if ($class) $class = " class='" . $class . "'";
 
 
