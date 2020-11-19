@@ -10,7 +10,7 @@
 	$(window).on('load', function(){
 		var length = {{ total }};
 		var	chunkSize = {{ chunk_size }};
-		makeRequest({{ start }}, chunkSize, '{{ table_name }}');
+		makeRequest({{ start }}, chunkSize, '{{ dataset }}');
 	});
 	function updateProgressBar(id, value) {
 		var total = {{ total }};
@@ -20,7 +20,7 @@
 			.find('span').html(width.toFixed(2) + ' %');
 
 	}
-	function makeRequest(rowIndex, chunkSize, tableName) {
+	function makeRequest(rowIndex, chunkSize, dataset) {
 		console.log('rowIndex = ', rowIndex);
 		if( {{ total }} < rowIndex ) {
 			updateProgressBar('{{ id }}', {{ total }});
@@ -32,13 +32,13 @@
 		}
 		$.ajax({
 			url: '{{ processor_url }}',
-			type: "POST",
-			data: {tablename: tableName, start: rowIndex, chunkSize: chunkSize},
+			type: "GET",
+			data: {dataset: dataset, start: rowIndex, chunkSize: chunkSize},
 			success: function(data) {
 				var Data = JSON.parse(data);
 //					console.log(Data);
 				updateProgressBar('{{ id }}', Data.i);
-				makeRequest(Data.i, chunkSize, tableName);
+				makeRequest(Data.i, chunkSize, dataset);
 			},
 		})
 	}

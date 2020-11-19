@@ -37,14 +37,13 @@ class ViewBuilder
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-//		$this->data['breadcrumbs'] = array();
 		$this->data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_home'),
 			'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
 		);
 		$this->data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('tool/prom_ua_import', 'user_token=' . $this->session->data['user_token'], true)
+			'href' => $this->url->link('tool/softco_1c_sync', 'user_token=' . $this->session->data['user_token'], true)
 		);
 
 		$this->data['heading_title'] = $this->language->get('heading_title');
@@ -56,7 +55,7 @@ class ViewBuilder
 			$this->data['active_tab'] = $this->session->data['active_tab'];
 			unset($this->session->data['active_tab']);
 		} else {
-			$this->data['active_tab'] = 'common';
+			$this->data['active_tab'] = 'softco_1c_sync_main';
 		}
 		$this->active_tab = $this->data['active_tab'];
 
@@ -80,21 +79,28 @@ class ViewBuilder
 	}
 
 	public function addTab($id, $name) {
-		$this->tab = array(
-			'id'    =>  $id,
-			'name'  =>  $name,
-			'actions' => empty($this->tab['actions'])? [] : $this->tab['actions'],
-			'col_content'   =>  empty($this->tab['col_content'])? '' : $this->tab['col_content'],
-			'col_1'     =>  empty($this->tab['col_1'])? '' : $this->tab['col_1'],
-			'col_2'     =>  empty($this->tab['col_2'])? '' : $this->tab['col_2'],
-		);
-
-		$content_method = 'tab_' . $id;
 		if ($this->data['active_tab'] != $id ) {
-			$this->tab['col_content'] = '<a href="' . $this->createLink('', $id ) . '">Завантажити контент вкладки</a>';
+			$this->tabs[$id] = [
+				'id'    =>  $id,
+				'name'  =>  $name,
+				'actions' => [],
+				'col_content'   =>  '<a href="' . $this->createLink('', $id ) . '">Завантажити контент вкладки</a>',
+				'col_1'     =>  '',
+				'col_2'     =>  '',
+			];
+		}
+		else {
+			$this->tabs[$id] = [
+				'id'    =>  $id,
+				'name'  =>  $name,
+				'actions' => $this->tab['actions'],
+				'col_content'   =>  '',
+				'col_1'     =>  '',
+				'col_2'     =>  '',
+			];
 		}
 
-		$this->tabs[$id] = $this->tab;
+
 	}
 	public function getTabs() {
 		foreach ($this->tabs as &$tab) {
@@ -222,9 +228,9 @@ class ViewBuilder
 			if ($class) $class = " class='" . $class . "'";
 
 
-			$this->tab['col_' . $col_num] = empty($this->tab['col_' . $col_num])?
+			$this->tabs[$this->active_tab]['col_' . $col_num] = empty($this->tabs[$this->active_tab]['col_' . $col_num])?
 				"<" . $tag . $class . ">" . $message . "</$tag>"
-				: $this->tab['col_' . $col_num] . "<" . $tag . $class . ">" . $message . "</$tag>";
+				: $this->tabs[$this->active_tab]['col_' . $col_num] . "<" . $tag . $class . ">" . $message . "</$tag>";
 		}
 	}
 	public function addSMessage($message, $type = 'other_msg') {
@@ -258,6 +264,13 @@ class ViewBuilder
 		} else {
 			$this->data['other_msg'] = '';
 		}
+	}
+
+	public function addProgressBar($data) {
+		$data['start_value'] = isset($data['start_value'])? $data['start_value'] : 0;
+		$data['min_value'] = isset($data['min_value'])? $data['min_value'] : 0;
+		$view = $this->load->view('tool/jd_tools/snippets/progressbar', $data);
+		$this->addMessage($view, 'process', 'div', 'content');
 	}
 
 	public function render() {
