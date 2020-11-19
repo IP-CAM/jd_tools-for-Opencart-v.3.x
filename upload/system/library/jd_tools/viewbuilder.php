@@ -24,6 +24,9 @@ class ViewBuilder
 		if (!empty($data['route'])) {
 			$this->load->language($data['route']);
 		}
+		if(!empty($data['active_tab'])) {
+			$this->active_tab = $data['active_tab'];
+		}
 		$this->getEnvironment();
 	}
 
@@ -32,7 +35,6 @@ class ViewBuilder
 	}
 
 	private function getEnvironment(){
-		$this->loadScriptsEnvironment();
 		$this->document->addStyle( 'view/stylesheet/jd_tools/main.css');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -47,35 +49,6 @@ class ViewBuilder
 		);
 
 		$this->data['heading_title'] = $this->language->get('heading_title');
-	}
-	private function loadScriptsEnvironment() {
-		if (isset($this->request->get['active_tab'])) {
-			$this->data['active_tab'] = $this->request->get['active_tab'];
-		} elseif (isset($this->session->data['active_tab'])) {
-			$this->data['active_tab'] = $this->session->data['active_tab'];
-			unset($this->session->data['active_tab']);
-		} else {
-			$this->data['active_tab'] = 'softco_1c_sync_main';
-		}
-		$this->active_tab = $this->data['active_tab'];
-
-//		$this->tab_content = sprintf($this->language->get('method_not_exists'), $this->active_tab);
-
-		define('MESSAGE_ON', true);
-//		$this->load->language('tool/prom_ua_import');
-//
-//		library('jd_tools/source');
-//		$this->load->model('setting/setting');
-//		$filename = $this->model_setting_setting->getSettingValue('prom_ua_import_filename');
-//		if($filename) $this->source_config['files']['filename'] = $filename;
-//		$this->source = new JD_Tools\Source($this->source_config);
-//
-//		library('jd_tools/target');
-//		$this->target = new Library\JD_Tools\Target($this->target_config, $this->registry);
-//
-//		if(!defined('DIR_EXPORT_IMAGES'))define('DIR_EXPORT_IMAGES', DIR_UPLOAD . $this->source_config['from'] . '/' . 'images' . '/');
-//		define('DIR_IMPORT_IMAGES', DIR_IMAGE . $this->target_config['dir_image']);
-
 	}
 
 	public function addTab($id, $name) {
