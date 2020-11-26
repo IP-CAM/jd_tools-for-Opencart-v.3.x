@@ -9,8 +9,8 @@
 <script>
 	$(window).on('load', function(){
 		var length = {{ total }};
-		var	chunkSize = {{ chunk_size }};
-		makeRequest({{ start }}, chunkSize, '{{ dataset }}');
+		var	limit = {{ limit }};
+		makeRequest({{ start }}, limit, '{{ dataset }}');
 	});
 	function updateProgressBar(id, value) {
 		var total = {{ total }};
@@ -20,9 +20,9 @@
 			.find('span').html(width.toFixed(2) + ' %');
 
 	}
-	function makeRequest(rowIndex, chunkSize, dataset) {
-		console.log('rowIndex = ', rowIndex);
-		if( {{ total }} < rowIndex ) {
+	function makeRequest(start, limit, dataset) {
+		console.log('start = ', start);
+		if( {{ total }} < start ) {
 			updateProgressBar('{{ id }}', {{ total }});
 			console.log('Finish');
 			{% if redirect %}
@@ -33,12 +33,12 @@
 		$.ajax({
 			url: '{{ processor_url }}',
 			type: "GET",
-			data: {dataset: dataset, start: rowIndex, chunkSize: chunkSize},
+			data: {dataset: dataset, start: start, limit: limit},
 			success: function(data) {
 				var Data = JSON.parse(data);
 //					console.log(Data);
 				updateProgressBar('{{ id }}', Data.i);
-				makeRequest(Data.i, chunkSize, dataset);
+				makeRequest(Data.i, limit, dataset);
 			},
 		})
 	}

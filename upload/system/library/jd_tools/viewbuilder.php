@@ -43,9 +43,10 @@ class ViewBuilder
 			'text' => $this->language->get('text_home'),
 			'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
 		);
+		// jd todo Зробити хлібні крихти автоматичними! Інлайн хардкод!
 		$this->data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('tool/softco_1c_sync', 'user_token=' . $this->session->data['user_token'], true)
+			'href' => $this->url->link('tool/softko_1c_sync', 'user_token=' . $this->session->data['user_token'], true)
 		);
 
 		$this->data['heading_title'] = $this->language->get('heading_title');
