@@ -22,7 +22,7 @@
 	}
 	function makeRequest(start, limit, dataset) {
 		console.log('start = ', start);
-		if( {{ total }} < start ) {
+		if( {{ total }} <= start ) {
 			updateProgressBar('{{ id }}', {{ total }});
 			console.log('Finish');
 			{% if redirect %}
@@ -35,8 +35,14 @@
 			type: "GET",
 			data: {dataset: dataset, start: start, limit: limit},
 			success: function(data) {
-				var Data = JSON.parse(data);
+				if(typeof data != \'object\') {
+					var Data = JSON.parse(data);
 //					console.log(Data);
+				}
+				else {
+					var Data = data;
+				}
+
 				updateProgressBar('{{ id }}', Data.i);
 				makeRequest(Data.i, limit, dataset);
 			},
