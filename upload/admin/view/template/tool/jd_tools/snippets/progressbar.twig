@@ -20,6 +20,12 @@
 			.find('span').html(width.toFixed(2) + ' %');
 
 	}
+	function closeProgressBar(id) {
+		var width = 100;
+		$('#' + id + ' .progress-bar')
+				.attr('style', 'width:' + width + '%')
+				.find('span').html('No items to update or import');
+	}
 	function makeRequest(start, limit, dataset) {
 		console.log('start = ', start);
 		if( {{ total }} <= start ) {
@@ -43,8 +49,13 @@
 					var Data = data;
 				}
 
-				updateProgressBar('{{ id }}', Data.i);
-				makeRequest(Data.i, limit, dataset);
+				if(Data.i != 0) {
+					updateProgressBar('{{ id }}', Data.i);
+					makeRequest(Data.i, limit, dataset);
+				}
+				else {
+					closeProgressBar('{{ id }}');
+				}
 			},
 		})
 	}
