@@ -35,7 +35,7 @@
 			type: "GET",
 			data: {dataset: dataset, start: start, limit: limit},
 			success: function(data) {
-				if(typeof data != \'object\') {
+				if(typeof data != 'object') {
 					var Data = JSON.parse(data);
 //					console.log(Data);
 				}
