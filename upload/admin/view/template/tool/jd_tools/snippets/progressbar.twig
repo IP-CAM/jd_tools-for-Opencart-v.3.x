@@ -20,11 +20,15 @@
 			.find('span').html(width.toFixed(2) + ' %');
 
 	}
-	function closeProgressBar(id) {
-		var width = 100;
+	function closeProgressBar(id, i = 0, total = 0) {
+		var width = 100,
+				msg = 'No items to update or import';
+		if(total != 0) {
+			msg = "Finished. Processed " + i + " from " + total;
+		}
 		$('#' + id + ' .progress-bar')
 				.attr('style', 'width:' + width + '%')
-				.find('span').html('No items to update or import');
+				.find('span').html(msg);
 	}
 	function makeRequest(start, limit, dataset) {
 		console.log('start = ', start);
@@ -50,12 +54,12 @@
 					var Data = data;
 				}
 
-				if(Data.i != 0 && Data.i != undefined) {
+				if(Data.i != 0 && Data.i != undefined && Data.i != Data.total) {
 					updateProgressBar('{{ id }}', Data.i);
 					makeRequest(Data.i, limit, dataset);
 				}
 				else {
-					closeProgressBar('{{ id }}');
+					closeProgressBar('{{ id }}', Data.i, Data.total);
 				}
 			},
 		})
